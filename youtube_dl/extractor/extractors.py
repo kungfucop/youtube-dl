@@ -906,6 +906,7 @@ from .ruleporn import RulePornIE
 from .rutube import (
     RutubeIE,
     RutubeChannelIE,
+    RutubeEmbedPrivateIE,
     RutubeEmbedIE,
     RutubeMovieIE,
     RutubePersonIE,
