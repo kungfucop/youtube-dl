@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import re
 import itertools
+import hashlib
 
 from .common import InfoExtractor
 from ..compat import (
@@ -124,10 +125,87 @@ class RutubeIE(RutubeBaseIE):
         return info
 
 
+class RutubeEmbedPrivateIE(InfoExtractor):
+    IE_NAME = 'rutube:embed_private'
+    IE_DESC = 'Rutube embedded private videos'
+    _VALID_URL = r'https?://rutube\.ru/(?:video|play)/embed/((?P<id>[0-9]+)(\?p=(?P<pass>\w+))?)'
+
+    _TESTS = [{
+        'url': 'http://rutube.ru/play/embed/7004743?p=owZrhbpCiAOQu0qpOvIW5g',
+        'info_dict': {
+            'id': 'a10e53b86e8f349080f718582ce4c661',
+            'ext': 'flv',
+            'timestamp': 1387830582,
+            'upload_date': '20131223',
+            'uploader_id': '297833',
+            'description': 'Видео группы ★http://vk.com/foxkidsreset★ музей Fox Kids и Jetix<br/><br/> восстановлено и сделано в шикоформате subziro89 http://vk.com/subziro89',
+            'uploader': 'subziro89 ILya',
+            'title': 'Мистический городок Эйри в Индиан 5 серия озвучка subziro89',
+        },
+        'params': {
+            'skip_download': True,
+        },
+    }]
+
+    def _extract_video(self, options, video_id=None, url=None):
+        title = options.get('title')
+        if not title:
+            title = hashlib.md5(url.encode('utf-8')).hexdigest()
+
+        age_limit = options.get('is_adult')
+        if age_limit is not None:
+            age_limit = 18 if age_limit is True else 0
+
+        uploader_id = try_get(options, lambda x: x['author']['id'])
+        category = try_get(options, lambda x: x['category']['name'])
+
+        return {
+            'id': options.get('id') or video_id,
+            'title': title,
+            'description': options.get('description'),
+            'thumbnail': options.get('thumbnail_url'),
+            'duration': int_or_none(options.get('duration')),
+            'uploader': try_get(options, lambda x: x['author']['name']),
+            'uploader_id': compat_str(uploader_id) if uploader_id else None,
+            'timestamp': unified_timestamp(options.get('created_ts')),
+            'category': [category] if category else None,
+            'age_limit': age_limit,
+            'view_count': int_or_none(options.get('hits')),
+            'comment_count': int_or_none(options.get('comments_count')),
+            'is_live': bool_or_none(options.get('is_livestream')),
+        }
+
+    def _real_extract(self, url):
+        groups = re.match(self._VALID_URL, url)
+        video_id = groups.group('id')
+        password = groups.group('pass')
+        options = self._download_json(
+            'http://rutube.ru/api/play/options/%s/?format=json&p=%s' % (video_id, password),
+            video_id, 'Downloading options JSON')
+        info = self._extract_video(options, video_id, url)
+        formats = []
+        for format_id, format_url in options['video_balancer'].items():
+            ext = determine_ext(format_url)
+            if ext == 'm3u8':
+                formats.extend(self._extract_m3u8_formats(
+                    format_url, video_id, 'mp4', m3u8_id=format_id, fatal=False))
+            elif ext == 'f4m':
+                formats.extend(self._extract_f4m_formats(
+                    format_url, video_id, f4m_id=format_id, fatal=False))
+            else:
+                formats.append({
+                    'url': format_url,
+                    'format_id': format_id,
+                })
+        self._sort_formats(formats)
+        info['formats'] = formats
+        return info
+
+
 class RutubeEmbedIE(InfoExtractor):
     IE_NAME = 'rutube:embed'
     IE_DESC = 'Rutube embedded videos'
-    _VALID_URL = r'https?://rutube\.ru/(?:video|play)/embed/(?P<id>[0-9]+)'
+    _VALID_URL = r'https?://rutube\.ru/(?:video|play)/embed/(?P<id>[0-9]+)$'
 
     _TESTS = [{
         'url': 'http://rutube.ru/video/embed/6722881?vk_puid37=&vk_puid38=',
