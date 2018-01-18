@@ -1,7 +1,85 @@
-version <unreleased>
+version 2018.01.14
 
 Extractors
-* [youku] Update ccode
+* [youtube] Fix live streams extraction (#15202)
+* [wdr] Bypass geo restriction
+* [wdr] Rework extractors (#14598)
++ [wdr] Add support for wdrmaus.de/elefantenseite (#14598)
++ [gamestar] Add support for gamepro.de (#3384)
+* [viafree] Skip rtmp formats (#15232)
++ [pandoratv] Add support for mobile URLs (#12441)
++ [pandoratv] Add support for new URL format (#15131)
++ [ximalaya] Add support for ximalaya.com (#14687)
++ [digg] Add support for digg.com (#15214)
+* [limelight] Tolerate empty pc formats (#15150, #15151, #15207)
+* [ndr:embed:base] Make separate formats extraction non fatal (#15203)
++ [weibo] Add extractor (#15079)
++ [ok] Add support for live streams
+* [canalplus] Fix extraction (#15072)
+* [bilibili] Fix extraction (#15188)
+
+
+version 2018.01.07
+
+Core
+* [utils] Fix youtube-dl under PyPy3 on Windows
+* [YoutubeDL] Output python implementation in debug header
+
+Extractors
++ [jwplatform] Add support for multiple embeds (#15192)
+* [mitele] Fix extraction (#15186)
++ [motherless] Add support for groups (#15124)
+* [lynda] Relax URL regular expression (#15185)
+* [soundcloud] Fallback to avatar picture for thumbnail (#12878)
+* [youku] Fix list extraction (#15135)
+* [openload] Fix extraction (#15166)
+* [lynda] Skip invalid subtitles (#15159)
+* [twitch] Pass video id to url_result when extracting playlist (#15139)
+* [rtve.es:alacarta] Fix extraction of some new URLs
+* [acast] Fix extraction (#15147)
+
+
+version 2017.12.31
+
+Core
++ [extractor/common] Add container meta field for formats extracted
+  in _parse_mpd_formats (#13616)
++ [downloader/hls] Use HTTP headers for key request
+* [common] Use AACL as the default fourcc when AudioTag is 255
+* [extractor/common] Fix extraction of DASH formats with the same
+  representation id (#15111)
+
+Extractors
++ [slutload] Add support for mobile URLs (#14806)
+* [abc:iview] Bypass geo restriction
+* [abc:iview] Fix extraction (#14711, #14782, #14838, #14917, #14963, #14985,
+  #15035, #15057, #15061, #15071, #15095, #15106)
+* [openload] Fix extraction (#15118)
+- [sandia] Remove extractor
+- [collegerama] Remove extractor
++ [mediasite] Add support for sites based on Mediasite Video Platform (#5428,
+  #11185, #14343)
++ [ufctv] Add support for ufc.tv (#14520)
+* [pluralsight] Fix missing first line of subtitles (#11118)
+* [openload] Fallback on f-page extraction (#14665, #14879)
+* [vimeo] Improve password protected videos extraction (#15114)
+* [aws] Fix canonical/signed headers generation on python 2 (#15102)
+
+
+version 2017.12.28
+
+Extractors
++ [internazionale] Add support for internazionale.it (#14973)
+* [playtvak] Relax video regular expression and make description optional
+  (#15037)
++ [filmweb] Add support for filmweb.no (#8773, #10368)
++ [23video] Add support for 23video.com
++ [espn] Add support for fivethirtyeight.com (#6864)
++ [umg:de] Add support for universal-music.de (#11582, #11584)
++ [espn] Add support for espnfc and extract more formats (#8053)
+* [youku] Update ccode (#14880)
++ [openload] Add support for oload.stream (#15070)
+* [youku] Fix list extraction (#15065)
 
 
 version 2017.12.23
