@@ -10,18 +10,16 @@ from ..utils import (
 )
 
 
-class KrasViewIE(InfoExtractor):
-    IE_DESC = 'Красвью'
-    # http://krasview.ru/embed/329048
-    #http://hlamer.ru/video/329048-Djosh_Barnett_vs_Nandor_Guelmino
-    _VALID_URL = r'https?://krasview\.ru/(?:video|embed)/(?P<id>\d+)'
-
+class MoverIE(InfoExtractor):
+    IE_DESC = 'mover_uz'
+    # https://mover.uz/video/embed/SM9smOvj/
+    _VALID_URL = r'https?://mover\.uz/video/embed/(?P<id>\w+)/'
 
     _TEST = {
-        'url': 'http://krasview.ru/video/512228',
+        'url': 'https://mover.uz/video/embed/SM9smOvj/',
         'md5': '3b91003cf85fc5db277870c8ebd98eae',
         'info_dict': {
-            'id': '512228',
+            'id': 'SM9smOvj',
             'ext': 'mp4',
             'title': 'Снег, лёд, заносы',
             'description': 'Снято в городе Нягань, в Ханты-Мансийском автономном округе.',
@@ -38,20 +36,12 @@ class KrasViewIE(InfoExtractor):
 
         webpage = self._download_webpage(url, video_id)
 
-        flashvars = json.loads(js_to_json(self._search_regex(
-            r'video_Init\(({.+?})', webpage, 'flashvars')))
-
-        video_url = flashvars['url']
+        video_url = 'https://v.mover.uz/' + video_id + '_m.mp4'
         title = self._og_search_title(webpage, fatal=False)
         if not title:
             title = video_id
         description = self._og_search_description(webpage, default=None)
-        thumbnail = flashvars.get('image') or self._og_search_thumbnail(webpage)
-        duration = int_or_none(flashvars.get('duration'))
-        width = int_or_none(self._og_search_property(
-            'video:width', webpage, 'video width', default=None))
-        height = int_or_none(self._og_search_property(
-            'video:height', webpage, 'video height', default=None))
+        thumbnail = 'https://v.mover.uz/' + video_id + '_m2.jpg'
 
         return {
             'id': video_id,
@@ -59,7 +49,4 @@ class KrasViewIE(InfoExtractor):
             'title': title,
             'description': description,
             'thumbnail': thumbnail,
-            'duration': duration,
-            'width': width,
-            'height': height,
         }
