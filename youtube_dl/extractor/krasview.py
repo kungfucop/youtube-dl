@@ -12,6 +12,7 @@ from ..utils import (
 
 class KrasViewIE(InfoExtractor):
     IE_DESC = 'Красвью'
+    # http://krasview.ru/embed/329048
     _VALID_URL = r'https?://krasview\.ru/(?:video|embed)/(?P<id>\d+)'
 
     _TEST = {
@@ -39,7 +40,9 @@ class KrasViewIE(InfoExtractor):
             r'video_Init\(({.+?})', webpage, 'flashvars')))
 
         video_url = flashvars['url']
-        title = self._og_search_title(webpage)
+        title = self._og_search_title(webpage, fatal=False)
+        if not title:
+            title = video_id
         description = self._og_search_description(webpage, default=None)
         thumbnail = flashvars.get('image') or self._og_search_thumbnail(webpage)
         duration = int_or_none(flashvars.get('duration'))
