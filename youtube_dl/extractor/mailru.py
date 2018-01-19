@@ -15,11 +15,11 @@ class MailRuIE(InfoExtractor):
     IE_DESC = 'Видео@Mail.Ru'
     _VALID_URL = r'''(?x)
                     https?://
-                        (?:(?:www|m)\.)?my\.mail\.ru/
+                        (?:(?:www|m|api)\.)?(my | api\.video)\.mail\.ru/
                         (?:
                             video/.*\#video=/?(?P<idv1>(?:[^/]+/){3}\d+)|
                             (?:(?P<idv2prefix>(?:[^/]+/){2})video/(?P<idv2suffix>[^/]+/\d+))\.html|
-                            (?:video/embed|\+/video/meta)/(?P<metaid>\d+)
+                            (?:video/embed|\+/video/meta)/(?P<metaid>\d+)|(?:videos/embed/mail)/(?P<idv3>(?:[^/]+/){2}\d+)
                         )
                     '''
     _TESTS = [
@@ -80,6 +80,10 @@ class MailRuIE(InfoExtractor):
         {
             'url': 'http://my.mail.ru/+/video/meta/7949340477499637815',
             'only_matching': True,
+        },
+        {
+            'url': 'http://api.video.mail.ru/videos/embed/mail/salen.65/557/567.html',
+            'only_matching': True,
         }
     ]
 
@@ -93,15 +97,24 @@ class MailRuIE(InfoExtractor):
         else:
             video_id = mobj.group('idv1')
             if not video_id:
-                video_id = mobj.group('idv2prefix') + mobj.group('idv2suffix')
+                video_id = mobj.group('idv3')
+                if not video_id:
+                    video_id = mobj.group('idv2prefix') + mobj.group('idv2suffix')
             webpage = self._download_webpage(url, video_id)
-            page_config = self._parse_json(self._search_regex(
-                r'(?s)<script[^>]+class="sp-video__page-config"[^>]*>(.+?)</script>',
-                webpage, 'page config', default='{}'), video_id, fatal=False)
-            if page_config:
-                meta_url = page_config.get('metaUrl') or page_config.get('video', {}).get('metaUrl')
+            page_config = None
+            meta_url = None
+            if mobj.group('idv3'):
+                page_config = self._parse_json(self._search_regex(
+                    r'(?s)(?:<div[^w]+data-mru-fragment=\"video/embed/main\">)(?:[^<]+)<script[^>]+[^>]*>(.+?)</script>',
+                    webpage, 'page config', default='{}'), video_id, fatal=False)
+                if page_config:
+                    meta_url = page_config.get('flashVars', {}).get('metadataUrl') or page_config.get('video', {}).get('metadataUrl')
             else:
-                meta_url = None
+                page_config = self._parse_json(self._search_regex(
+                    r'(?s)<script[^>]+class="sp-video__page-config"[^>]*>(.+?)</script>',
+                    webpage, 'page config', default='{}'), video_id, fatal=False)
+                if page_config:
+                    meta_url = page_config.get('metaUrl') or page_config.get('video', {}).get('metaUrl')
 
         video_data = None
         if meta_url:
