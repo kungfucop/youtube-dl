@@ -9,6 +9,7 @@ from ..utils import (
     update_url_query,
     str_or_none,
 )
+import json
 
 
 class UOLIE(InfoExtractor):
@@ -32,28 +33,34 @@ class UOLIE(InfoExtractor):
             'title': 'Incêndio destrói uma das maiores casas noturnas de Londres',
             'description': 'Em Londres, um incêndio destruiu uma das maiores boates da cidade. Não há informações sobre vítimas.',
         }
-    }, {
-        'url': 'http://mais.uol.com.br/static/uolplayer/index.html?mediaId=15951931',
-        'only_matching': True,
-    }, {
-        'url': 'http://mais.uol.com.br/view/15954259',
-        'only_matching': True,
-    }, {
-        'url': 'http://noticias.band.uol.com.br/brasilurgente/video/2016/08/05/15951931/miss-simpatia-e-encontrada-morta.html',
-        'only_matching': True,
-    }, {
-        'url': 'http://videos.band.uol.com.br/programa.asp?e=noticias&pr=brasil-urgente&v=15951931&t=Policia-desmonte-base-do-PCC-na-Cracolandia',
-        'only_matching': True,
-    }, {
-        'url': 'http://mais.uol.com.br/view/cphaa0gl2x8r/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
-        'only_matching': True,
-    }, {
-        'url': 'http://noticias.uol.com.br//videos/assistir.htm?video=rafaela-silva-inspira-criancas-no-judo-04024D983968D4C95326',
-        'only_matching': True,
-    }, {
-        'url': 'http://mais.uol.com.br/view/e0qbgxid79uv/15275470',
-        'only_matching': True,
-    }]
+    },
+        {
+            'url': 'https://player.mais.uol.com.br/index.html?mediaId=8934856',
+            'only_matching': True,
+        },
+
+        {
+            'url': 'http://mais.uol.com.br/static/uolplayer/index.html?mediaId=15951931',
+            'only_matching': True,
+        }, {
+            'url': 'http://mais.uol.com.br/view/15954259',
+            'only_matching': True,
+        }, {
+            'url': 'http://noticias.band.uol.com.br/brasilurgente/video/2016/08/05/15951931/miss-simpatia-e-encontrada-morta.html',
+            'only_matching': True,
+        }, {
+            'url': 'http://videos.band.uol.com.br/programa.asp?e=noticias&pr=brasil-urgente&v=15951931&t=Policia-desmonte-base-do-PCC-na-Cracolandia',
+            'only_matching': True,
+        }, {
+            'url': 'http://mais.uol.com.br/view/cphaa0gl2x8r/incendio-destroi-uma-das-maiores-casas-noturnas-de-londres-04024E9A3268D4C95326',
+            'only_matching': True,
+        }, {
+            'url': 'http://noticias.uol.com.br//videos/assistir.htm?video=rafaela-silva-inspira-criancas-no-judo-04024D983968D4C95326',
+            'only_matching': True,
+        }, {
+            'url': 'http://mais.uol.com.br/view/e0qbgxid79uv/15275470',
+            'only_matching': True,
+        }]
 
     _FORMATS = {
         '2': {
@@ -102,8 +109,9 @@ class UOLIE(InfoExtractor):
             webpage = self._download_webpage(url, video_id)
             media_id = self._search_regex(r'mediaId=(\d+)', webpage, 'media id')
 
+        # https://api.mais.uol.com.br/apiuol/v4/player/data/8934856
         video_data = self._download_json(
-            'http://mais.uol.com.br/apiuol/v3/player/getMedia/%s.json' % media_id,
+            'https://api.mais.uol.com.br/apiuol/v4/player/data/%s' % media_id,
             media_id)['item']
         title = video_data['title']
 
@@ -112,11 +120,13 @@ class UOLIE(InfoExtractor):
             'r': 'http://mais.uol.com.br',
         }
         formats = []
-        for f in video_data.get('formats', []):
-            f_url = f.get('url') or f.get('secureUrl')
+        video_data = json.loads(json.dumps(video_data))
+        formats_dict = video_data.get('formats', [])
+        for f in formats_dict:
+            f_url = formats_dict[f].get('url') or formats_dict[f].get('secureUrl')
             if not f_url:
                 continue
-            format_id = str_or_none(f.get('id'))
+            format_id = str_or_none(formats_dict[f].get('id'))
             fmt = {
                 'format_id': format_id,
                 'url': update_url_query(f_url, query),
@@ -125,12 +135,6 @@ class UOLIE(InfoExtractor):
             formats.append(fmt)
         self._sort_formats(formats)
 
-        tags = []
-        for tag in video_data.get('tags', []):
-            tag_description = tag.get('description')
-            if not tag_description:
-                continue
-            tags.append(tag_description)
 
         return {
             'id': media_id,
@@ -138,6 +142,6 @@ class UOLIE(InfoExtractor):
             'description': clean_html(video_data.get('desMedia')),
             'thumbnail': video_data.get('thumbnail'),
             'duration': int_or_none(video_data.get('durationSeconds')) or parse_duration(video_data.get('duration')),
-            'tags': tags,
+            'tags': None,
             'formats': formats,
         }
