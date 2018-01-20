@@ -12,7 +12,7 @@ from ..utils import (
 
 class SapoIE(InfoExtractor):
     IE_DESC = 'SAPO Vídeos'
-    _VALID_URL = r'https?://(?:(?:v2|www)\.)?videos\.sapo\.(?:pt|cv|ao|mz|tl)/(?P<id>[\da-zA-Z]{20})'
+    _VALID_URL = r'https?://(?:(?:v2|www|rd3)\.)?videos\.sapo\.(?:pt|cv|ao|mz|tl)/(?:playhtml\?file=http://rd3\.videos\.sapo\.pt/)?(?P<id>[\da-zA-Z]{20})'
 
     _TESTS = [
         {
@@ -27,7 +27,8 @@ class SapoIE(InfoExtractor):
                 'duration': 264,
                 'uploader': 'tiago_1988',
                 'upload_date': '20080229',
-                'categories': ['benfica', 'cabral', 'desporto', 'futebol', 'geovanni', 'hooijdonk', 'joao', 'karel', 'lisboa', 'miccoli'],
+                'categories': ['benfica', 'cabral', 'desporto', 'futebol', 'geovanni', 'hooijdonk', 'joao', 'karel',
+                               'lisboa', 'miccoli'],
             },
         },
         {
@@ -58,8 +59,13 @@ class SapoIE(InfoExtractor):
                 'uploader': 'sapozen',
                 'upload_date': '20090609',
                 'categories': ['condicionativa', 'heloisa', 'hipnose', 'miranda', 'sapo', 'zen'],
-            },
+            }
         },
+
+        {
+            'url': 'http://rd3.videos.sapo.pt/playhtml?file=http://rd3.videos.sapo.pt/rhe7amvQStpHfjS15KJA/mov/1',
+        }
+
     ]
 
     def _real_extract(self, url):
