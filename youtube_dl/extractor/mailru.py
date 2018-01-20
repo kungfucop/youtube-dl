@@ -15,7 +15,7 @@ class MailRuIE(InfoExtractor):
     IE_DESC = 'Видео@Mail.Ru'
     _VALID_URL = r'''(?x)
                     https?://
-                        (?:(?:www|m|api)\.)?(my | api\.video)\.mail\.ru/
+                        (?:(?:www|m|api)\.)?(my | api\.video | videoapi\.my)\.mail\.ru/
                         (?:
                             video/.*\#video=/?(?P<idv1>(?:[^/]+/){3}\d+)|
                             (?:(?P<idv2prefix>(?:[^/]+/){2})video/(?P<idv2suffix>[^/]+/\d+))\.html|
@@ -84,6 +84,9 @@ class MailRuIE(InfoExtractor):
         {
             'url': 'http://api.video.mail.ru/videos/embed/mail/salen.65/557/567.html',
             'only_matching': True,
+        }, {
+            'url': 'http://videoapi.my.mail.ru/videos/embed/mail/7-14-7wolf/_myvideo/203.html',
+            'only_matching': True,
         }
     ]
 
@@ -108,7 +111,8 @@ class MailRuIE(InfoExtractor):
                     r'(?s)(?:<div[^w]+data-mru-fragment=\"video/embed/main\">)(?:[^<]+)<script[^>]+[^>]*>(.+?)</script>',
                     webpage, 'page config', default='{}'), video_id, fatal=False)
                 if page_config:
-                    meta_url = page_config.get('flashVars', {}).get('metadataUrl') or page_config.get('video', {}).get('metadataUrl')
+                    meta_url = page_config.get('flashVars', {}).get('metadataUrl') or page_config.get('video', {}).get(
+                        'metadataUrl')
             else:
                 page_config = self._parse_json(self._search_regex(
                     r'(?s)<script[^>]+class="sp-video__page-config"[^>]*>(.+?)</script>',
