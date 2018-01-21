@@ -13,9 +13,9 @@ from ..utils import (
 class KrasViewIE(InfoExtractor):
     IE_DESC = 'Красвью'
     # http://krasview.ru/embed/329048
-    #http://hlamer.ru/video/329048-Djosh_Barnett_vs_Nandor_Guelmino
-    _VALID_URL = r'https?://krasview\.ru/(?:video|embed)/(?P<id>\d+)'
-
+    # http://hlamer.ru/embed/703677
+    # http://hlamer.ru/video/329048-Djosh_Barnett_vs_Nandor_Guelmino
+    _VALID_URL = r'https?://(krasview|hlamer)\.ru/(?:video|embed)/(?P<id>\d+)'
 
     _TEST = {
         'url': 'http://krasview.ru/video/512228',
@@ -35,11 +35,13 @@ class KrasViewIE(InfoExtractor):
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
+        if 'hlamer.ru' in url:
+            url = 'http://hlamer.ru/video/'+video_id
 
         webpage = self._download_webpage(url, video_id)
 
         flashvars = json.loads(js_to_json(self._search_regex(
-            r'video_Init\(({.+?})', webpage, 'flashvars')))
+            r'video_Init\(((?P<flashvars>{.+?})(?:,))', webpage, 'flashvars', group='flashvars')))
 
         video_url = flashvars['url']
         title = self._og_search_title(webpage, fatal=False)
