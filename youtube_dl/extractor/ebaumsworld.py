@@ -4,8 +4,9 @@ from .common import InfoExtractor
 
 
 class EbaumsWorldIE(InfoExtractor):
-    _VALID_URL = r'https?://(?:www\.)?ebaumsworld\.com/videos/[^/]+/(?P<id>\d+)'
+    _VALID_URL = r'https?://(?:www\.)?ebaumsworld\.com/(videos|media)/[^/]+/(?P<id>\d+)'
 
+    # http://www.ebaumsworld.com/media/embed/83426749
     _TEST = {
         'url': 'http://www.ebaumsworld.com/videos/a-giant-python-opens-the-door/83367677/',
         'info_dict': {
