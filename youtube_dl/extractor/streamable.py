@@ -65,7 +65,13 @@ class StreamableIE(InfoExtractor):
     def _real_extract(self, url):
         video_id = self._match_id(url)
 
+        # This video is no longer available due to a copyright claim by the content owner
         # Note: Using the ajax API, as the public Streamable API doesn't seem
+        webpage = self._download_webpage(url, video_id)
+        if "This video is no longer available due to a copyright claim by the content owner" in webpage:
+            raise ExtractorError(
+                'This video is no longer available due to a copyright claim by the content owner',
+                expected=True)
         # to return video info like the title properly sometimes, and doesn't
         # include info like the video duration
         video = self._download_json(
