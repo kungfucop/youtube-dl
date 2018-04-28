@@ -162,6 +162,7 @@ from .cbc import (
     CBCPlayerIE,
     CBCWatchVideoIE,
     CBCWatchIE,
+    CBCOlympicsIE,
 )
 from .cbs import CBSIE
 from .cbslocal import CBSLocalIE
@@ -325,7 +326,6 @@ from .espn import (
     FiveThirtyEightIE,
 )
 from .esri import EsriVideoIE
-from .etonline import ETOnlineIE
 from .europa import EuropaIE
 from .everyonesmixtape import EveryonesMixtapeIE
 from .expotv import ExpoTVIE
@@ -373,8 +373,10 @@ from .franceculture import FranceCultureIE
 from .franceinter import FranceInterIE
 from .francetv import (
     FranceTVIE,
+    FranceTVSiteIE,
     FranceTVEmbedIE,
     FranceTVInfoIE,
+    FranceTVJeunesseIE,
     GenerationWhatIE,
     CultureboxIE,
 )
@@ -382,7 +384,10 @@ from .freesound import FreesoundIE
 from .freespeech import FreespeechIE
 from .freshlive import FreshLiveIE
 from .funimation import FunimationIE
-from .funk import FunkIE
+from .funk import (
+    FunkMixIE,
+    FunkChannelIE,
+)
 from .funnyordie import FunnyOrDieIE
 from .fusion import FusionIE
 from .fxnetworks import FXNetworksIE
@@ -426,6 +431,7 @@ from .hellporno import HellPornoIE
 from .helsinki import HelsinkiIE
 from .hentaistigma import HentaiStigmaIE
 from .hgtv import HGTVComShowIE
+from .hidive import HiDiveIE
 from .historicfilms import HistoricFilmsIE
 from .hitbox import HitboxIE, HitboxLiveIE
 from .hitrecord import HitRecordIE
@@ -490,7 +496,6 @@ from .jwplatform import JWPlatformIE
 from .jpopsukitv import JpopsukiIE
 from .kakao import KakaoIE
 from .kaltura import KalturaIE
-from .kamcord import KamcordIE
 from .kanalplay import KanalPlayIE
 from .kankan import KankanIE
 from .karaoketv import KaraoketvIE
@@ -503,7 +508,6 @@ from .keek import KeekIE
 from .konserthusetplay import KonserthusetPlayIE
 from .kontrtube import KontrTubeIE
 from .krasview import KrasViewIE
-from .mover import MoverIE
 from .ku6 import Ku6IE
 from .kusi import KUSIIE
 from .kuwo import (
@@ -527,13 +531,14 @@ from .lcp import (
 )
 from .learnr import LearnrIE
 from .lecture2go import Lecture2GoIE
-from .lego import LEGOIE
-from .lemonde import LemondeIE
 from .leeco import (
     LeIE,
     LePlaylistIE,
     LetvCloudIE,
 )
+from .lego import LEGOIE
+from .lemonde import LemondeIE
+from .lenta import LentaIE
 from .libraryofcongress import LibraryOfCongressIE
 from .libsyn import LibsynIE
 from .lifenews import (
@@ -545,6 +550,7 @@ from .limelight import (
     LimelightChannelIE,
     LimelightChannelListIE,
 )
+from .line import LineTVIE
 from .litv import LiTVIE
 from .liveleak import (
     LiveLeakIE,
@@ -565,9 +571,11 @@ from .lynda import (
 )
 from .m6 import M6IE
 from .macgamestore import MacGameStoreIE
-from .mailru import MailRuIE
-from .truba import TrubaIE
-from .bashtube import BashtubeIE
+from .mailru import (
+    MailRuIE,
+    MailRuMusicIE,
+    MailRuMusicSearchIE,
+)
 from .makerschannel import MakersChannelIE
 from .makertv import MakerTVIE
 from .mangomolo import (
@@ -634,7 +642,10 @@ from .musicplayon import MusicPlayOnIE
 from .mwave import MwaveIE, MwaveMeetGreetIE
 from .myspace import MySpaceIE, MySpaceAlbumIE
 from .myspass import MySpassIE
-from .myvi import MyviIE
+from .myvi import (
+    MyviIE,
+    MyviEmbedIE,
+)
 from .myvidster import MyVidsterIE
 from .nationalgeographic import (
     NationalGeographicVideoIE,
@@ -648,6 +659,7 @@ from .nbc import (
     NBCIE,
     NBCNewsIE,
     NBCOlympicsIE,
+    NBCOlympicsStreamIE,
     NBCSportsIE,
     NBCSportsVPlayerIE,
 )
@@ -802,6 +814,10 @@ from .periscope import (
 from .philharmoniedeparis import PhilharmonieDeParisIE
 from .phoenix import PhoenixIE
 from .photobucket import PhotobucketIE
+from .picarto import (
+    PicartoIE,
+    PicartoVodIE,
+)
 from .piksel import PikselIE
 from .pinkbike import PinkbikeIE
 from .pladform import PladformIE
@@ -864,6 +880,7 @@ from .rai import (
     RaiPlayPlaylistIE,
     RaiIE,
 )
+from .raywenderlich import RayWenderlichIE
 from .rbmaradio import RBMARadioIE
 from .rds import RDSIE
 from .redbulltv import RedBullTVIE
@@ -885,7 +902,6 @@ from .revision3 import (
     Revision3IE,
 )
 from .rice import RICEIE
-from .ringtv import RingTVIE
 from .rmcdecouverte import RMCDecouverteIE
 from .ro220 import Ro220IE
 from .rockstargames import RockstarGamesIE
@@ -905,13 +921,13 @@ from .rtp import RTPIE
 from .rts import RTSIE
 from .rtve import RTVEALaCartaIE, RTVELiveIE, RTVEInfantilIE, RTVELiveIE, RTVETelevisionIE
 from .rtvnh import RTVNHIE
+from .rtvs import RTVSIE
 from .rudo import RudoIE
 from .ruhd import RUHDIE
 from .ruleporn import RulePornIE
 from .rutube import (
     RutubeIE,
     RutubeChannelIE,
-    RutubeEmbedPrivateIE,
     RutubeEmbedIE,
     RutubeMovieIE,
     RutubePersonIE,
@@ -938,6 +954,10 @@ from .servingsys import ServingSysIE
 from .servus import ServusIE
 from .sevenplus import SevenPlusIE
 from .sexu import SexuIE
+from .seznamzpravy import (
+    SeznamZpravyIE,
+    SeznamZpravyArticleIE,
+)
 from .shahid import (
     ShahidIE,
     ShahidShowIE,
@@ -995,6 +1015,7 @@ from .stitcher import StitcherIE
 from .sport5 import Sport5IE
 from .sportbox import SportBoxEmbedIE
 from .sportdeutschland import SportDeutschlandIE
+from .springboardplatform import SpringboardPlatformIE
 from .sprout import SproutIE
 from .srgssr import (
     SRGSSRIE,
@@ -1013,6 +1034,7 @@ from .sunporno import SunPornoIE
 from .svt import (
     SVTIE,
     SVTPlayIE,
+    SVTSeriesIE,
 )
 from .swrmediathek import SWRMediathekIE
 from .syfy import SyfyIE
@@ -1038,9 +1060,14 @@ from .telebruxelles import TeleBruxellesIE
 from .telecinco import TelecincoIE
 from .telegraaf import TelegraafIE
 from .telemb import TeleMBIE
-from .telequebec import TeleQuebecIE
+from .telequebec import (
+    TeleQuebecIE,
+    TeleQuebecEmissionIE,
+    TeleQuebecLiveIE,
+)
 from .teletask import TeleTaskIE
 from .telewebion import TelewebionIE
+from .tennistv import TennisTVIE
 from .testurl import TestURLIE
 from .tf1 import TF1IE
 from .tfo import TFOIE
@@ -1050,7 +1077,6 @@ from .theplatform import (
     ThePlatformFeedIE,
 )
 from .thescene import TheSceneIE
-from .thesixtyone import TheSixtyOneIE
 from .thestar import TheStarIE
 from .thesun import TheSunIE
 from .theweatherchannel import TheWeatherChannelIE
@@ -1114,6 +1140,7 @@ from .tvnoe import TVNoeIE
 from .tvnow import (
     TVNowIE,
     TVNowListIE,
+    TVNowShowIE,
 )
 from .tvp import (
     TVPEmbedIE,
@@ -1196,7 +1223,6 @@ from .vice import (
     ViceArticleIE,
     ViceShowIE,
 )
-from .viceland import VicelandIE
 from .vidbit import VidbitIE
 from .viddler import ViddlerIE
 from .videa import VideaIE
@@ -1211,6 +1237,7 @@ from .videomore import (
 from .videopremium import VideoPremiumIE
 from .videopress import VideoPressIE
 from .vidio import VidioIE
+from .vidlii import VidLiiIE
 from .vidme import (
     VidmeIE,
     VidmeUserIE,
@@ -1354,6 +1381,7 @@ from .yandexmusic import (
     YandexMusicPlaylistIE,
 )
 from .yandexdisk import YandexDiskIE
+from .yapfiles import YapFilesIE
 from .yesjapan import YesJapanIE
 from .yinyuetai import YinYueTaiIE
 from .ynet import YnetIE

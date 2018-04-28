@@ -298,7 +298,8 @@ class YoutubeDL(object):
     the downloader (see youtube_dl/downloader/common.py):
     nopart, updatetime, buffersize, ratelimit, min_filesize, max_filesize, test,
     noresizebuffer, retries, continuedl, noprogress, consoletitle,
-    xattr_set_filesize, external_downloader_args, hls_use_mpegts.
+    xattr_set_filesize, external_downloader_args, hls_use_mpegts,
+    http_chunk_size.
 
     The following options are used by the post processors:
     prefer_ffmpeg:     If True, use ffmpeg instead of avconv if both are available,
@@ -531,12 +532,16 @@ class YoutubeDL(object):
     def save_console_title(self):
         if not self.params.get('consoletitle', False):
             return
+        if self.params.get('simulate', False):
+            return
         if compat_os_name != 'nt' and 'TERM' in os.environ:
             # Save the title on stack
             self._write_string('\033[22;0t', self._screen_file)
 
     def restore_console_title(self):
         if not self.params.get('consoletitle', False):
+            return
+        if self.params.get('simulate', False):
             return
         if compat_os_name != 'nt' and 'TERM' in os.environ:
             # Restore the title from stack
@@ -1032,7 +1037,7 @@ class YoutubeDL(object):
             '!=': operator.ne,
         }
         operator_rex = re.compile(r'''(?x)\s*
-            (?P<key>width|height|tbr|abr|vbr|asr|filesize|fps)
+            (?P<key>width|height|tbr|abr|vbr|asr|filesize|filesize_approx|fps)
             \s*(?P<op>%s)(?P<none_inclusive>\s*\?)?\s*
             (?P<value>[0-9.]+(?:[kKmMgGtTpPeEzZyY]i?[Bb]?)?)
             $
@@ -1848,7 +1853,7 @@ class YoutubeDL(object):
                     def compatible_formats(formats):
                         video, audio = formats
                         # Check extension
-                        video_ext, audio_ext = audio.get('ext'), video.get('ext')
+                        video_ext, audio_ext = video.get('ext'), audio.get('ext')
                         if video_ext and audio_ext:
                             COMPATIBLE_EXTS = (
                                 ('mp3', 'mp4', 'm4a', 'm4p', 'm4b', 'm4r', 'm4v', 'ismv', 'isma'),
