@@ -929,6 +929,7 @@ from .rutube import (
     RutubeIE,
     RutubeChannelIE,
     RutubeEmbedIE,
+    RutubeEmbedPrivateIE,
     RutubeMovieIE,
     RutubePersonIE,
     RutubePlaylistIE,
